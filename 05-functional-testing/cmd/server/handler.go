@@ -42,7 +42,7 @@ func (h *Handler) ConfigurePrey() gin.HandlerFunc {
 		var request PreyRequest
 
 		if err := c.ShouldBindJSON(&request); err != nil {
-			resp := ResponseSuccess{Success: true}
+			resp := ResponseSuccess{Success: false}
 			c.JSON(http.StatusBadRequest, resp)
 			return
 		}
@@ -63,7 +63,7 @@ func (h *Handler) SimulateHunt() gin.HandlerFunc {
 		err, time := h.shark.Hunt(h.prey)
 		if err != nil {
 			resp := ResponseSimulate{
-				Success: true,
+				Success: false,
 				Message: err.Error(),
 				Time:    time}
 			c.JSON(http.StatusOK, resp)

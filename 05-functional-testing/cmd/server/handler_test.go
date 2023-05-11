@@ -44,7 +44,7 @@ func TestHunt(t *testing.T) {
 
 		expectConfigurePrey := `{"success": true}`
 		expectConfigureShark := `{"success": true}`
-		expectConfigureSimul := `{"success": true,"message": "could not catch it","time": 0}`
+		expectConfigureSimul := `{"success": false,"message": "could not catch it","time": 0}`
 		servertest := CreateServer()
 		preyBody := `{"speed": 299.0}`
 		sharkbody := `{
@@ -76,7 +76,7 @@ func TestHunt(t *testing.T) {
 
 		expectConfigurePrey := `{"success": true}`
 		expectConfigureShark := `{"success": true}`
-		expectConfigureSimul := `{"success": true,"message": "could not catch it","time": 0}`
+		expectConfigureSimul := `{"success": false,"message": "could not catch it","time": 0}`
 		servertest := CreateServer()
 		preyBody := `{"speed": 90.0}`
 		sharkbody := `{
@@ -134,4 +134,43 @@ func TestHunt(t *testing.T) {
 		assert.JSONEq(t, expectConfigureSimul, responseSimu.Body.String(), "error while hunt")
 
 	})
+}
+
+func TestConfigureShark(t *testing.T) {
+
+	//arrange
+
+	expectConfigureShark := `{"success": false}`
+	servertest := CreateServer()
+	sharkbody := `{
+		"x_position": "x",
+		"y_position": 400.0,
+		"speed": 103.0
+		}`
+
+	requestShark, responseShark := CreateRequestTest("PUT", "/v1/shark", sharkbody)
+
+	//act
+	servertest.ServeHTTP(responseShark, requestShark)
+
+	//assert
+	assert.JSONEq(t, expectConfigureShark, responseShark.Body.String(), "configure of shark incorrect")
+
+}
+
+func TestConfigurePrey(t *testing.T) {
+
+	//arrange
+
+	expectConfigurePrey := `{"success": false}`
+	servertest := CreateServer()
+	preyBody := `{"speed": "max"}`
+
+	requestPrey, responsePrey := CreateRequestTest("PUT", "/v1/prey", preyBody)
+	//act
+	servertest.ServeHTTP(responsePrey, requestPrey)
+
+	//assert
+	assert.JSONEq(t, expectConfigurePrey, responsePrey.Body.String(), "configure of prey incorrect")
+
 }
